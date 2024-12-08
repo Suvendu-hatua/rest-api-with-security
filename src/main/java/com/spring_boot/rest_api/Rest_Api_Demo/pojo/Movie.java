@@ -1,9 +1,22 @@
 package com.spring_boot.rest_api.Rest_Api_Demo.pojo;
 
+import jakarta.persistence.*;
+
+@Entity
+@Table(name = "MOVIE")
 public class Movie {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column
     private long id;
+
+    @Column(length = 50,nullable = false)
     private String title;
+
+    @Column(name = "isbn",nullable = false)
     private String Isbn;
+
+    @Column(name = "publication_year",nullable = false)
     private String publication_year;
 
 
@@ -12,6 +25,10 @@ public class Movie {
         this.title = title;
         Isbn = isbn;
         this.publication_year = publication_year;
+    }
+
+    public Movie(){
+
     }
 
     public long getId() {
