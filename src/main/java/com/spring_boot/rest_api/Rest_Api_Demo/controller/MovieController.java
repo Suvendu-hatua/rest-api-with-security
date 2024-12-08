@@ -10,21 +10,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
 public class MovieController {
-
-//    private static List<Movie> movieList;
-
-//    @PostConstruct
-//    public void initializeMovies(){
-//        movieList=new ArrayList<>();
-//        movieList.add(new Movie(1001,"Pushpa 2","ISO12345","2024"));
-//        movieList.add(new Movie(1010,"Avengers","ISO12338","2025"));
-//        movieList.add(new Movie(1029,"Real Hero","ISON9980","2022"));
-//    }
 
     private static  MovieService movieService;
 
@@ -33,14 +22,19 @@ public class MovieController {
         movieService=ms;
     }
 
-
     @RequestMapping(value = "/movies",method = RequestMethod.GET)
     public List<Movie> getAllMovies(){
         return movieService.getAllMovies();
     }
 
     @GetMapping("/movies/{id}")
-    public Movie getMovieById(@PathVariable("id") long id) throws MovieNotFoundException {
+    public Movie getMovieById(@PathVariable("id") String strId) throws MovieNotFoundException {
+        long id;
+        try{
+            id=Integer.parseInt(strId);
+        }catch (NumberFormatException exe){
+           throw new NumberFormatException("Valid Id format is required! ID must be of Integer.");
+        }
        Movie movie=movieService.getMovieById(id);
        if(movie==null){
            throw new MovieNotFoundException("movie is not found with id: "+id);
@@ -60,16 +54,26 @@ public class MovieController {
     }
 
     @DeleteMapping("/movies/{id}")
-    public ResponseEntity<?> deleteMovie(@PathVariable("id") long id) throws MovieNotFoundException {
+    public ResponseEntity<?> deleteMovie(@PathVariable("id") String strId) throws MovieNotFoundException {
+        long id;
+        try{
+            id=Integer.parseInt(strId);
+        }catch (NumberFormatException exe){
+            throw new NumberFormatException("Valid Id format is required! ID must be of Integer.");
+        }
+
        boolean result=movieService.deleteMovieById(id);
+
        if(!result){
            throw new MovieNotFoundException("movie is not found with id: "+id+" so, can't be deleted.");
        }
-       //for success--->
-        SuccessResponse successResponse=new SuccessResponse(
-                "movie with id: "+id+" deleted successfully.",HttpStatus.OK.value(),System.currentTimeMillis()
-        );
-       return new ResponseEntity<SuccessResponse>(successResponse,HttpStatus.OK);
+       else{
+           //for success--->
+           SuccessResponse successResponse=new SuccessResponse(
+                   "movie with id: "+id+" deleted successfully.",HttpStatus.OK.value(),System.currentTimeMillis()
+           );
+           return new ResponseEntity<SuccessResponse>(successResponse,HttpStatus.OK);
+       }
 
     }
 
