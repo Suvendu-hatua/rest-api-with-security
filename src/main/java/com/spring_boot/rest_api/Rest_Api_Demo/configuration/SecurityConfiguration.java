@@ -8,30 +8,39 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+import org.springframework.security.provisioning.JdbcUserDetailsManager;
+import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+
+import javax.sql.DataSource;
 
 
 @Configuration
 public class SecurityConfiguration {
 
+//    @Bean
+//    public InMemoryUserDetailsManager userDetailsManager(){
+//        UserDetails user1= User.builder()
+//                .username("suvendu")
+//                .password("{noop}test@123")
+//                .roles("ADMIN","PRODUCER","PUBLIC")
+//                .build();
+//        UserDetails user2=User.builder()
+//                .username("sonali")
+//                .password("{noop}test@123")
+//                .roles("PRODUCER","PUBLIC")
+//                .build();
+//        UserDetails user3=User.builder()
+//                .username("nirmal")
+//                .password("{noop}test@123")
+//                .roles("PUBLIC")
+//                .build();
+//        return new InMemoryUserDetailsManager(user1,user2,user3);
+//    }
+
     @Bean
-    public InMemoryUserDetailsManager userDetailsManager(){
-        UserDetails user1= User.builder()
-                .username("suvendu")
-                .password("{noop}test@123")
-                .roles("ADMIN","PRODUCER","PUBLIC")
-                .build();
-        UserDetails user2=User.builder()
-                .username("sonali")
-                .password("{noop}test@123")
-                .roles("PRODUCER","PUBLIC")
-                .build();
-        UserDetails user3=User.builder()
-                .username("nirmal")
-                .password("{noop}test@123")
-                .roles("PUBLIC")
-                .build();
-        return new InMemoryUserDetailsManager(user1,user2,user3);
+    public UserDetailsManager userDetailsManager( DataSource dataSource){
+        return new JdbcUserDetailsManager(dataSource);
     }
 
     @Bean
