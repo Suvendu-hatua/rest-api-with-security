@@ -38,9 +38,17 @@ public class SecurityConfiguration {
 //        return new InMemoryUserDetailsManager(user1,user2,user3);
 //    }
 
+//    @Bean
+//    public UserDetailsManager userDetailsManager(DataSource dataSource){
+//        return new JdbcUserDetailsManager(dataSource);
+//    }
+
     @Bean
-    public UserDetailsManager userDetailsManager( DataSource dataSource){
-        return new JdbcUserDetailsManager(dataSource);
+    public UserDetailsManager userDetailsManager(DataSource dataSource){
+        JdbcUserDetailsManager jdbcUserDetailsManager=new JdbcUserDetailsManager(dataSource);
+        jdbcUserDetailsManager.setUsersByUsernameQuery("select * from members where user_name=?");
+        jdbcUserDetailsManager.setAuthoritiesByUsernameQuery("select * from roles where uname=?");
+        return jdbcUserDetailsManager;
     }
 
     @Bean
